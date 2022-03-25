@@ -10,7 +10,8 @@ const app = express();
 app.use(express.json());
 
 //connecting to database
-const MongoURI = process.env.MONGODB_URI;
+const MongoURI = `MONGODB_URI=mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASS}@cluster0-shard-00-00.rjalm.mongodb.net:27017,cluster0-shard-00-01.rjalm.mongodb.net:27017,cluster0-shard-00-02.rjalm.mongodb.net:27017/luca?ssl=true&replicaSet=atlas-pit1kf-shard-0&authSource=admin&retryWrites=true&w=majority`;
+
 const client = new MongoClient(MongoURI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
