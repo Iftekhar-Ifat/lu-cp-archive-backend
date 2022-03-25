@@ -311,6 +311,6 @@ async function serverSide() {
 serverSide().catch(console.dir);
 app.use(cors());
 
-app.listen(5000, () => {
+app.listen(port, () => {
     console.log("server working at 5000");
 });
