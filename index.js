@@ -208,19 +208,19 @@ async function serverSide() {
                 }
             } else if (req.body.itemId === "topic-wise") {
                 const itemUrl = req.body.url;
+                console.log(req.body);
 
                 const processedItem = {
                     title: req.body.title,
                     url: req.body.url,
                     difficulty: req.body.difficulty,
                     route: req.body.route,
+                    tags: req.body.tags,
                 };
 
                 const dataExist = await TopicWise.find({ url: itemUrl })
                     .limit(1)
                     .toArray();
-
-                console.log(dataExist);
 
                 if (dataExist.length === 0) {
                     const insertTopicWise = await TopicWise.insertOne(
