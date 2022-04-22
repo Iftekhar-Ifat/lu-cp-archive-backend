@@ -96,6 +96,12 @@ async function serverSide() {
             res.send(shortContest);
         });
 
+        //getting tags
+        app.get("/all-tags", async (req, res) => {
+            const allTags = await Tags.find({}).toArray();
+            res.send(allTags);
+        });
+
         /*
             GET request end ....
         */
