@@ -34,6 +34,7 @@ async function serverSide() {
         );
         const Resources = database.collection("resources");
         const TopicWise = database.collection("topic-wise");
+        const Tags = database.collection("tags");
 
         /*
             GET request start ....
@@ -296,6 +297,48 @@ async function serverSide() {
                 );
             }
             res.send(updateStatus);
+        });
+
+        //updating tags
+        app.post("/update-tags", async (req, res) => {
+            const newTag = req.body.tags;
+
+            const addTag = await Tags.updateOne({
+                $addToSet: { tags: newTag },
+            });
+
+            // const allArrays = ["solving", "solved", "reviewing", "skipped"];
+
+            // allArrays.forEach((element) => {
+            //     let checkQuery = {};
+            //     checkQuery["status." + element] = problemURL;
+
+            //     const getUserProblems = users.updateOne(
+            //         {
+            //             email: currentUserEmail,
+            //         },
+            //         { $pull: checkQuery }
+            //     );
+            // });
+
+            // let query = {};
+            // query["status." + currentStatus] = problemURL;
+
+            // const dataExist = await users
+            //     .find({ email: currentUserEmail })
+            //     .limit(1)
+            //     .toArray();
+
+            // let updateStatus;
+            // if (dataExist.length > 0) {
+            //     updateStatus = await users.updateOne(
+            //         {
+            //             email: currentUserEmail,
+            //         },
+            //         { $push: query }
+            //     );
+            // }
+            res.send(addTag);
         });
 
         //deleting a problem
