@@ -35,10 +35,17 @@ async function serverSide() {
         const Resources = database.collection("resources");
         const TopicWise = database.collection("topic-wise");
         const Tags = database.collection("tags");
+        const Cards = database.collection("cards");
 
         /*
             GET request start ....
         */
+
+        //getting cards info
+        app.get("/cards", async (req, res) => {
+            const cardData = await Cards.find({}).toArray();
+            res.send(cardData);
+        });
 
         // getting all the users
         app.get("/users", async (req, res) => {
@@ -314,6 +321,26 @@ async function serverSide() {
                 { $addToSet: { tags: newTag } }
             );
             res.send(newTag);
+        });
+
+        //updating cards
+        app.post("/cards", async (req, res) => {
+            const newCardTitle = req.body.title;
+            const processedItem = {
+                icon: req.body.icon,
+                title: req.body.title,
+                subtitle: req.body.subtitle,
+            };
+            const dataExist = await Cards.find({ title: newCardTitle })
+                .limit(1)
+                .toArray();
+
+            if (dataExist.length === 0) {
+                const insertCards = await Cards.insertOne(processedItem);
+                res.send(insertCards);
+            } else {
+                res.send("Error");
+            }
         });
 
         //deleting a problem
