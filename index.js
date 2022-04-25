@@ -324,7 +324,7 @@ async function serverSide() {
         });
 
         //updating cards
-        app.post("/cards", async (req, res) => {
+        app.post("/add-cards", async (req, res) => {
             const newCardTitle = req.body.title;
             const processedItem = {
                 icon: req.body.icon,
