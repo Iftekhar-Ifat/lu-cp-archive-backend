@@ -49,8 +49,10 @@ async function serverSide() {
 
         // getting all the users
         app.get("/users", async (req, res) => {
-            const userData = await users.find({}).toArray();
-            res.send(userData);
+            const userData = await users
+                .find({ email: req.query.currentUserEmail })
+                .toArray();
+            res.send(userData[0]);
         });
 
         // getting topic-wise problem according to the route
