@@ -413,6 +413,13 @@ async function serverSide() {
 serverSide().catch(console.dir);
 app.use(cors());
 
-app.listen(port, () => {
-    console.log("server working at 5000");
+client.connect((err) => {
+    if (err) {
+        console.error(err);
+        return false;
+    }
+    // connection to mongo is successful, listen for requests
+    app.listen(port, () => {
+        console.log("server working at 5000");
+    });
 });
