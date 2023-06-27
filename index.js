@@ -36,6 +36,7 @@ async function serverSide() {
         const TopicWise = database.collection("topic-wise");
         const Tags = database.collection("tags");
         const Cards = database.collection("cards");
+        const Leaderboard = database.collection("leaderboard");
 
         /*
             GET request start ....
@@ -49,10 +50,24 @@ async function serverSide() {
 
         // getting all the users
         app.get("/users", async (req, res) => {
-            const userData = await users
-                .find({ email: req.query.currentUserEmail })
-                .toArray();
-            res.send(userData[0]);
+            const currentUserEmail = req.query.currentUserEmail;
+            if (currentUserEmail) {
+                const userData = await users
+                    .find({ email: req.query.currentUserEmail })
+                    .toArray();
+                res.send(userData[0]);
+            } else {
+                const userData = await users.find({}).toArray();
+                res.send(userData);
+            }
+        });
+
+        // getting leaderboard
+        app.get("/leaderboard", async (req, res) => {
+            const leaderboard = await Leaderboard.find({
+                key: "leaderboard-key",
+            }).toArray();
+            res.send(leaderboard);
         });
 
         // getting topic-wise problem according to the route
@@ -135,22 +150,63 @@ async function serverSide() {
             }
         });
 
-        //updating cf Handle
-        app.post("/send-cf-handle", async (req, res) => {
-            const currentUserEmail = req.body.handle.userEmail;
-            const changedHandle = req.body.handle.cfHandle;
-            const userExist = await users
-                .find({ email: currentUserEmail })
-                .limit(1)
-                .toArray();
+        //updating Handle
+        app.post("/send-handle", async (req, res) => {
+            const currentUserEmail = req.body.handleInfo.userEmail;
+            const platformName = req.body.handleInfo.platform;
+            const userHandle = req.body.handleInfo.handle;
 
-            if (userExist.length !== 0) {
+            const handleObject = {
+                platform: platformName,
+                handle: userHandle,
+            };
+
+            // Find the document with the given email
+            const document = await users.findOne({
+                email: currentUserEmail,
+            });
+
+            if (document) {
+                const handles = document.handles;
+
+                // Check if the handles array is empty
+                if (handles.length === 0) {
+                    handles.push(handleObject);
+                } else {
+                    // Find the index of the object with the same platform value
+                    const matchingIndex = handles.findIndex(
+                        (handle) => handle.platform === handleObject.platform
+                    );
+
+                    if (matchingIndex !== -1) {
+                        // Replace the object at the matching index with the new object
+                        handles.splice(matchingIndex, 1, handleObject);
+                    } else {
+                        // Add the new object to the handles array
+                        handles.push(handleObject);
+                    }
+                }
+
+                // Update the document in the collection
                 const setHandle = await users.updateOne(
                     { email: currentUserEmail },
-                    { $set: { CFhandle: changedHandle } }
+                    { $set: { handles: handles } }
                 );
+
                 res.json(setHandle);
+            } else {
+                console.log("Document not found.");
             }
+        });
+
+        //updating leaderboard
+        app.post("/send-leaderboard", async (req, res) => {
+            const leaderboard = req.body;
+            const addLeaderboard = await Leaderboard.updateOne(
+                { key: "leaderboard-key" },
+                { $set: { leaderboard: leaderboard } }
+            );
+            res.send(addLeaderboard);
         });
 
         //sending data to database
@@ -319,12 +375,11 @@ async function serverSide() {
             const newTag = req.body.tags;
 
             const addTag = await Tags.updateOne(
-                { email: "iftekharifat007@gmail.com" },
+                { key: "tags_collection" },
                 { $addToSet: { tags: newTag } }
             );
             res.send(newTag);
         });
-
         //updating cards
         app.post("/add-cards", async (req, res) => {
             const newCardTitle = req.body.title;
