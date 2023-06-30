@@ -413,7 +413,7 @@ async function serverSide() {
 serverSide().catch(console.dir);
 app.use(
     cors({
-        origin: "https://chartreuse-green-dog-garb.cyclic.app",
+        origin: "https://lu-cp-archive.vercel.app",
     })
 );
 
