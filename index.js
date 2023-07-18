@@ -411,11 +411,7 @@ async function serverSide() {
 }
 
 serverSide().catch(console.dir);
-app.use(
-    cors({
-        origin: "https://lu-cp-archive.vercel.app",
-    })
-);
+app.use(cors());
 
 client.connect((err) => {
     if (err) {
