@@ -20,5 +20,8 @@
     },
     "engines": {
         "node": "18.16.0"
+    },
+    "devDependencies": {
+        "eslint": "^8.45.0"
     }
 }
