@@ -17,7 +17,6 @@ router.get("/leaderboard", async (req, res) => {
 //updating leaderboard
 router.post("/send-leaderboard", checkRole, async (req, res) => {
     const db = await connectToDatabase();
-    console.log(req.body);
     const leaderboard = req.body.leaderboard;
     const addLeaderboard = await db
         .collection("leaderboard")
