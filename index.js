@@ -20,6 +20,7 @@ const sendData = require("./routes/send-data");
 const topicwiseProblemsRoute = require("./routes/topic-wise-problem");
 const usersRoute = require("./routes/users");
 const deleteData = require("./routes/delete-data");
+const addAdmin = require("./routes/add-admin");
 
 app.use(cardsRoute);
 app.use(cfProblemsRoute);
@@ -33,6 +34,7 @@ app.use(sendData);
 app.use(topicwiseProblemsRoute);
 app.use(usersRoute);
 app.use(deleteData);
+app.use(addAdmin);
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
